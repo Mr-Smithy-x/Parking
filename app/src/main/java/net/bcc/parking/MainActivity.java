@@ -24,26 +24,23 @@ public class MainActivity extends AppCompatActivity {
         Button submit = findViewById(R.id.submit_btn);
         final EditText field = findViewById(R.id.license_field);
         final TextView textView = findViewById(R.id.how_many_violations);
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String license = field.getText().toString();
-                ParkingViolation.getViolationAsync(license, new ParkingViolation.OnParkingViolationCallback() {
-                    @Override
-                    public void OnResult(List<Violation> list) {
+        submit.setOnClickListener(v -> {
+            String license = field.getText().toString();
+            ParkingViolation.getViolationAsync(license, new ParkingViolation.OnParkingViolationCallback() {
+                @Override
+                public void OnResult(List<Violation> list) {
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            Stream<Integer> integerStream = list.stream().map(Violation::getFineAmount);
-                        }
-                        textView.setText(String.format(Locale.getDefault(), "You have %d violations",list.size()));
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        Stream<Integer> integerStream = list.stream().map(Violation::getFineAmount);
                     }
+                    textView.setText(String.format(Locale.getDefault(), "You have %d violations",list.size()));
+                }
 
-                    @Override
-                    public void OnError(Exception e) {
-                        textView.setText(e.getMessage());
-                    }
-                });
-            }
+                @Override
+                public void OnError(Exception e) {
+                    textView.setText(e.getMessage());
+                }
+            });
         });
     }
 }
